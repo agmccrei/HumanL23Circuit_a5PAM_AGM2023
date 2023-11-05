@@ -1,0 +1,132 @@
+// Author: Alexandre Guet-McCreight
+//
+// Adapted from:
+// Etay Hay 2014
+// Dendritic excitability and gain control in recurrent cortical microcircuits (Hay and Segev, 2014, Cerebral Cortex)
+//
+// Parallel simulation code for microcircuits of human L2/3 neurons
+
+//====================================================================
+//====================== General files and tools =====================
+{load_file("nrngui.hoc")} // Uncomment if not using python
+{load_file("import3d.hoc")}
+
+{load_file("models/biophys_HL23MN1.hoc")}
+{load_file("models/biophys_HL23PN1.hoc")}
+{load_file("models/biophys_HL23BN1.hoc")}
+{load_file("models/biophys_HL23VN1.hoc")}
+
+{load_file("models/NeuronTemplate.hoc")}
+{load_file("cell_functions.hoc")}
+{load_file("net_functions.hoc")}
+{load_file("net_params.hoc")}
+
+//======================================================================
+//============================ general config ==========================
+
+func round() {
+	if ($1>0) {
+		return int($1*(10^$2)+0.5)/(10^$2)
+	} else {
+		return int($1*(10^$2)-0.5)/(10^$2)
+	}
+}
+
+strdef modelname
+strdef fileName
+objref fileObj
+
+modelname = "HL23PN1"
+Gtonic = 0.000938 // 0.000827 // 0.00055 // PN (no drug)
+GtonicDrug = 0.001498 // 0.001158 // 0.0008 // PN (drug)
+
+targetbase = 62.5
+targetdrug = 32.7
+
+fileObj = new File()
+
+tstart = 2000
+tstop = 5000
+
+v_init = -75
+
+//================================================================================
+//================================ Initialization ================================
+
+objref cell, vc, cvec, tvec, gV
+
+cell = init_cell(modelname)
+access cell.soma
+
+cvec = new Vector()
+tvec = new Vector()
+
+gV = new Graph()
+gV.size(0,tstop,0,-0.2)
+graphList[0].append(gV)
+gV.exec_menu("Keep Lines")
+
+vc = new VClamp(0.5)
+vc.dur[0] = tstop
+vc.amp[0] = -75
+tvec.record(&t)
+cvec.record(&vc.i)
+
+run()
+cvec.plot(gV, tvec, 3, 0)
+base_mean = cvec.mean(int(tstart/dt),int(tstop/dt))
+
+if (strcmp("HL23PN1",modelname)==0){
+	basemag = 0
+	while (abs(round(basemag,1)) != abs(targetbase)){
+		addTonicInhibition(cell,Gtonic,-5,Gtonic)
+		run()
+		addtonic_mean = cvec.mean(int(tstart/dt),int(tstop/dt))
+		basemag = (addtonic_mean-base_mean)*1000
+		print "Base magnitude = ", round(basemag,1), " pA"
+		if (abs(round(basemag,1)) > abs(targetbase)){
+			Gtonic = Gtonic - 0.000003
+		}
+		if (abs(round(basemag,1)) < abs(targetbase)){
+			Gtonic = Gtonic + 0.000002
+		}
+		cvec.plot(gV, tvec, 2, 0)
+	}
+	
+	drugmag = 0
+	while (abs(round(drugmag,1)) != abs(targetdrug)){
+		addTonicInhibition(cell,Gtonic,-5,GtonicDrug)
+		run()
+		adddrug_mean = cvec.mean(int(tstart/dt),int(tstop/dt))
+		drugmag = (adddrug_mean-addtonic_mean)*1000
+		print "Drug magnitude = ", round(drugmag,1), " pA"
+		if (abs(round(drugmag,1)) > abs(targetdrug)){
+			GtonicDrug = GtonicDrug - 0.000003
+		}
+		if (abs(round(drugmag,1)) < abs(targetdrug)){
+			GtonicDrug = GtonicDrug + 0.000002
+		}
+		cvec.plot(gV, tvec, 4, 0)
+	}
+	
+	
+} else {
+	
+	addTonicInhibition(cell,Gtonic,-5,Gtonic)
+	run()
+	addtonic_mean = cvec.mean(int(tstart/dt),int(tstop/dt))
+	cvec.plot(gV, tvec, 2, 0)
+	
+	addTonicInhibition(cell,Gtonic,-5,GtonicDrug)
+	run()
+	adddrug_mean = cvec.mean(int(tstart/dt),int(tstop/dt))
+	cvec.plot(gV, tvec, 4, 0)
+	
+}
+
+print "Baseline Current Magnitude: ",base_mean*1000," pA"
+print "Baseline Tonic Inhibition Current Magnitude (target = ~62.5 pA): ",(addtonic_mean-base_mean)*1000," pA"
+print "Drug Current Magnitude (target = ~32.7 pA): ",(adddrug_mean-addtonic_mean)*1000," pA"
+print "Total Tonic Inhibition Current Magnitude With Drug (target = ~95.2 pA): ",(adddrug_mean-base_mean)*1000," pA"
+print "Baseline Tonic Inhibition Conductance: ",Gtonic," S/cm2"
+print "Drug Tonic Inhibition Conductance: ",GtonicDrug," S/cm2"

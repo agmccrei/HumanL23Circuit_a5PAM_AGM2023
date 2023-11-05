@@ -1,0 +1,18 @@
+proc biophys_HL23VN1(){
+	$o1.delete_axon_BPO()
+	forsec $o1.all {
+		insert pas
+		insert Ih
+		Ra = 100
+		cm = 2
+		e_pas = -81.64099928563398
+		g_pas = 5.640407332265837e-05
+		gbar_Ih = 7.937538666539732e-05
+		shift1_Ih = 117.54696999889302
+		shift2_Ih = 3.460797910265395
+		shift3_Ih = -49.69676238671805
+		shift4_Ih = 58.27114333073568
+		shift5_Ih = 86.63729662000578
+		shift6_Ih = 281.49007535744454
+	}
+}

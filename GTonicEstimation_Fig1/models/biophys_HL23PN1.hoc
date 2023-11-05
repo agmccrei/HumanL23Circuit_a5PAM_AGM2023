@@ -1,0 +1,26 @@
+proc biophys_HL23PN1(){
+	$o1.delete_axon(3,1.75,1,1)
+	forsec $o1.all {
+		insert pas
+		Ra = 100
+		cm = 1
+		e_pas = -80
+		g_pas = 0.0000954
+		insert Ih
+	}
+	forsec $o1.somatic {
+		gbar_Ih = 0.000148
+	}
+	forsec $o1.apical {
+		cm = 2
+	}
+	forsec $o1.basal {
+		cm = 2
+		gbar_Ih = 0.000000709
+	}
+	$o1.distribute_channels("apic","gbar_Ih",2,-0.8696,3.6161,0.0,2.0870,$o1.soma.gbar_Ih)
+	$o1.myelin{
+		Ra = 100
+		cm = 0.02
+	}
+}

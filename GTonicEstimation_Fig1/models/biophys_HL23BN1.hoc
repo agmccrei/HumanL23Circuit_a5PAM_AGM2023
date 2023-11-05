@@ -1,0 +1,12 @@
+proc biophys_HL23BN1(){
+	$o1.delete_axon_BPO()
+	forsec $o1.all {
+		insert pas
+		insert Ih
+		Ra = 100
+		cm = 2
+		e_pas = -83.85905159083714
+		g_pas = 0.00013276715388485768
+		gbar_Ih = 4.0286355749662496e-05
+	}
+}

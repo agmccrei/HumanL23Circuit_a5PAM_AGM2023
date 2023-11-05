@@ -1,0 +1,22 @@
+proc biophys_HL23MN1(){
+	$o1.delete_axon(3,1.75,1,1)
+	forsec $o1.all {
+		insert pas
+		Ra = 100
+		cm = 1
+		e_pas = -81.5
+		g_pas = 0.0000232
+		insert Ih
+	}
+	forsec $o1.somatic {
+		gbar_Ih = 0.0000431
+	}
+	forsec $o1.basal {
+		cm = 1
+		gbar_Ih = 0.0000949
+	}
+	$o1.myelin{
+		Ra = 100
+		cm = 0.02
+	}
+}
