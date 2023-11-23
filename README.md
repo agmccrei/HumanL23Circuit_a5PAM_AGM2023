@@ -55,16 +55,7 @@ DRUG_benzo = 1
 
 
 Analysis Code:    
-All code used for analyzing the circuit simulation results is found in the /L23Net_Analyses/ directory. In all cases this code should run on personal machines - see below for specs of the system on which this code was tested.
-
-MacBook Pro, 13-inch, 2019    
-1.4 GHz Quad-Core    
-Intel Core i5    
-Intel Iris Plus Graphics     
-645 1536 MB    
-8 GB 2133 MHz    
-LPDDR3    
-Sonoma 14.0    
+All code used for analyzing the circuit simulation results is found in the /L23Net_Analyses/ directory. In all cases this code should run on personal machines. 
 
 Simulated data is required to run these files - to obtain this data, run the network simulations (as above) using HPC resources and then process the simulated data to generate PSD outputs saved to npy files (see L23Net_Analyses/Build_PSD_NPY_files.py) or generate oscillatory event analysis outputs saved to csv files (L23Net_Analyses/Build_OEvents_csv_files.py), which can then more readily be analyzed by the code files in L23Net_Analyses/. The analysis codes perform analyses of multiple simulations across random seeds per condition.
 
