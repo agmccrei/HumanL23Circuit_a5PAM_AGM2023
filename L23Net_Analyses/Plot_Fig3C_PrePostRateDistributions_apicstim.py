@@ -120,7 +120,7 @@ rate_window = 5.000001 # Hz
 ratebins = np.arange(0,rate_window,0.2)
 bin_centres_highres = np.arange(0.001,rate_window,0.001)
 
-conds = ['healthy','MDD','MDD_a5PAM']
+conds = ['healthy_apicstim','MDD_apicstim','MDD_a5PAM_apicstim']
 paths = ['Saved_SpikesOnly/' + i + '/' for i in conds]
 
 x_labels = ['Healthy','MDD','MDD\n'+r'$\alpha$'+'5-PAM']
@@ -159,7 +159,7 @@ for seed in N_seedsList:
 		
 		plt.plot(bin_centres, s_hist, label='Test data')
 		plt.plot(bin_centres_highres, hist_fit, label='Fitted data')
-		plt.savefig('figs_ratedistributions/'+conds[cind]+str(seed)+'_Pre.png',dpi=300,transparent=True)
+		plt.savefig('figs_ratedistributions_apicstim/'+conds[cind]+str(seed)+'_Pre.png',dpi=300,transparent=True)
 		plt.close()
 		
 		rates_fits[cind].append(hist_fit)
@@ -179,7 +179,7 @@ for cind, sr in enumerate(stimrates):
 	
 	plt.plot(bin_centres_stim, s_hist, label='Test data')
 	plt.plot(bin_centres_highres, post_fit, label='Fitted data')
-	plt.savefig('figs_ratedistributions/'+conds[cind]+'_Post.png',dpi=300,transparent=True)
+	plt.savefig('figs_ratedistributions_apicstim/'+conds[cind]+'_Post.png',dpi=300,transparent=True)
 	plt.close()
 	
 	for pre_fit in rates_fits[cind]:
@@ -305,11 +305,12 @@ for cind in range(0,len(conds)):
 					"Cohen's d (vs MDD)" : cd0[cind][dfi]},
 					ignore_index = True)
 
-df.to_csv('figs_ratedistributions/stats_FailedFalse.csv')
+df.to_csv('figs_ratedistributions_apicstim/stats_FailedFalse.csv')
 
 x = [0.,4.]
 width = 1.
 fig_det, ax_det = plt.subplots(figsize=(7, 6))
+fig_det_bp, ax_det_bp = plt.subplots(figsize=(7, 6))
 for cind,c in enumerate(conds):
 	if not len(conds) % 2:
 		x2 = [xr+cind*width+width/2 for xr in x]
@@ -334,18 +335,30 @@ for cind,c in enumerate(conds):
 			elinewidth=3,
 			capthick=3
 			)
+	ax_det_bp.boxplot([failed_detections[cind],false_detections[cind]],positions=x2,
+		   boxprops=dict(color=colors_conds[cind],linewidth=3),
+		   capprops=dict(color=colors_conds[cind],linewidth=3),
+		   whiskerprops=dict(color=colors_conds[cind],linewidth=3),
+		   flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3),
+		   medianprops=dict(color=colors_conds[cind],linewidth=3),
+		   widths=0.9
+		  )
 p_thresh = 0.05
 c_thresh = 1.
 
 for cind in range(0,len(conds)):
 	if ((p[cind][0] < p_thresh) & (abs(cd[cind][0]) > c_thresh) & (cind>0)):
 		ax_det.text(x3[cind],data_m[cind][0]+data_sd_u[cind][0]+1.,'*',c=colors_conds[1],va='top' if ((p0[cind][0] < p_thresh) & (abs(cd0[cind][0]) >c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+		ax_det_bp.text(x3[cind],np.max(failed_detections[cind])+1.,'*',c=colors_conds[1],va='top' if ((p0[cind][0] < p_thresh) & (abs(cd0[cind][0]) >c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 	if ((p[cind][1] < p_thresh) & (abs(cd[cind][1]) > c_thresh) & (cind>0)):
 		ax_det.text(x3[cind]+x[1],data_m[cind][1]+data_sd_u[cind][1]+1.,'*',c=colors_conds[1],va='top' if ((p0[cind][1] < p_thresh) & (abs(cd0[cind][1]) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+		ax_det_bp.text(x3[cind]+x[1],np.max(false_detections[cind])+1.,'*',c=colors_conds[1],va='top' if ((p0[cind][1] < p_thresh) & (abs(cd0[cind][1]) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 	if ((p0[cind][0] < p_thresh) & (abs(cd0[cind][0]) > c_thresh) & (cind>0)):
 		ax_det.text(x3[cind],data_m[cind][0]+data_sd_u[cind][0]+1.,'*',c='k',va='bottom' if ((p[cind][0] < p_thresh) & (abs(cd[cind][0]) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+		ax_det_bp.text(x3[cind],np.max(failed_detections[cind])+1.,'*',c='k',va='bottom' if ((p[cind][0] < p_thresh) & (abs(cd[cind][0]) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 	if ((p0[cind][1] < p_thresh) & (abs(cd0[cind][1]) > c_thresh) & (cind>0)):
 		ax_det.text(x3[cind]+x[1],data_m[cind][1]+data_sd_u[cind][1]+1.,'*',c='k',va='bottom' if ((p[cind][1] < p_thresh) & (abs(cd[cind][1]) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+		ax_det_bp.text(x3[cind]+x[1],np.max(false_detections[cind])+1.,'*',c='k',va='bottom' if ((p[cind][1] < p_thresh) & (abs(cd[cind][1]) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 
 # if (pval_failed_HvsM < 0.05):
 # 	barplot_annotate_brackets(fig_det, ax_det, 0, 1, '*', [0,1], [data_m[0][0],data_m[1][0]], yerr=[data_sd_u[0][0],data_sd_u[1][0]])
@@ -365,7 +378,17 @@ ax_det.grid(False)
 ax_det.spines['right'].set_visible(False)
 ax_det.spines['top'].set_visible(False)
 fig_det.tight_layout()
-fig_det.savefig('figs_ratedistributions/DetectionProbability.png',dpi=300,transparent=True)
+fig_det.savefig('figs_ratedistributions_apicstim/DetectionProbability.png',dpi=300,transparent=True)
+
+ax_det_bp.set_ylabel('Probability (%)')
+ax_det_bp.set_xticks([xx+1 for xx in x])
+ax_det_bp.set_xlim(-1.1,7.1)
+ax_det_bp.set_xticklabels(['Failed\nDetection','False\nDetection'])
+ax_det_bp.grid(False)
+ax_det_bp.spines['right'].set_visible(False)
+ax_det_bp.spines['top'].set_visible(False)
+fig_det_bp.tight_layout()
+fig_det_bp.savefig('figs_ratedistributions_apicstim/DetectionProbability_bp.png',dpi=300,transparent=True)
 plt.close()
 
 # Average baseline fits
@@ -376,7 +399,7 @@ for cind, br in enumerate(rates_fits):
 # Plot
 cind = 0
 fig_ov, ax_ov = plt.subplots(figsize=(8, 8))
-np.save('figs_ratedistributions/post_stimulus_default_circuit.npy',hist_fit_stim[0])
+np.save('figs_ratedistributions_apicstim/post_stimulus_default_circuit.npy',hist_fit_stim[0])
 for br, sr in zip(hist_fit_base,hist_fit_stim):
 	idx = np.argwhere(np.diff(np.sign(br - sr))).flatten()
 	idx = idx[np.where(np.logical_and(idx>1100, idx<=2000))][0]
@@ -393,7 +416,7 @@ ax_ov.set_xlabel('Spike Rate (Hz)')
 ax_ov.set_ylabel('Proportion')
 ax_ov.set_xlim(0,bin_centres_highres[-1])
 fig_ov.tight_layout()
-fig_ov.savefig('figs_ratedistributions/RateDistribution.png',dpi=300,transparent=True)
+fig_ov.savefig('figs_ratedistributions_apicstim/RateDistribution.png',dpi=300,transparent=True)
 plt.close()
 
 x_labels2 = ['Healthy','MDD','MDD + '+r'$\alpha$'+'5-PAM']
@@ -415,6 +438,6 @@ for br, sr in zip(hist_fit_base,hist_fit_stim):
 	ax_ov.set_xlim(0,bin_centres_highres[-1])
 	ax_ov.set_title(x_labels2[cind])
 	fig_ov.tight_layout()
-	fig_ov.savefig('figs_ratedistributions/RateDistribution_'+conds[cind]+'.png',dpi=300,transparent=True)
+	fig_ov.savefig('figs_ratedistributions_apicstim/RateDistribution_'+conds[cind]+'.png',dpi=300,transparent=True)
 	plt.close()
 	cind += 1

@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from neuron import h, gui
+from scipy import stats as st
 
 h.load_file("nrngui.hoc")
 h.load_file("import3d.hoc")
@@ -22,11 +23,16 @@ h('strdef modelname')
 # exp_PTX_current_m =
 # exp_PTX_current_sd =
 
-exp_basline_current_m =  -65.86
-exp_basline_current_sd =  30.84
+exp_baseline_all = [-43.80,-42.20,-78.20,-119.10,-109.10,-41.40,-70.80,-35.80,-52.37]
+exp_basline_current_m = np.mean(exp_baseline_all)#-65.86
+exp_basline_current_sd =  np.std(exp_baseline_all)#30.84
 
-exp_drug_current_m = -95.28
-exp_drug_current_sd = 43.57
+exp_drug_all = [-148.30,-89.80,-85.60,-142.80,-157.50,-42.00,-60.40,-53.30,-77.82]
+exp_drug_current_m = np.mean(exp_drug_all)#-95.28
+exp_drug_current_sd = np.std(exp_drug_all)#43.57
+
+stat,p = st.ttest_rel(exp_baseline_all,exp_drug_all,alternative='greater')
+print(p)
 
 modelname = "HL23PN1"
 Gtonic = 0.000938
@@ -182,6 +188,14 @@ ax_recov.errorbar(x=xra[2],
 				capsize=4,
 				capthick=1,
 				elinewidth=1)
+x_dat1 = xra[0]+(np.random.random(len(exp_baseline_all))-0.5)*0#(0.35/4)
+x_dat2 = xra[2]+(np.random.random(len(exp_drug_all))-0.5)*0#(0.35/4)
+ind=4
+for x1,d1,x2,d2 in zip(x_dat1,np.abs(exp_baseline_all),x_dat2,np.abs(exp_drug_all)):
+	ax_recov.plot([x1,x2],[d1,d2],c='darkgrey',ls='dashed',lw=0.8,zorder=ind)
+	ind+=1
+ax_recov.scatter(x_dat1,np.abs(exp_baseline_all),s=4**2,c='white',edgecolors='k',zorder=ind+1)
+ax_recov.scatter(x_dat2,np.abs(exp_drug_all),s=4**2,c='white',edgecolors='dodgerblue',zorder=ind+2)
 ax_recov.locator_params(axis='y', nbins=4)
 ax_recov.set_ylabel('Current (pA)')
 ax_recov.set_xticks(xra)

@@ -152,6 +152,7 @@ colors_conds = ['tab:purple',
 				'dodgerblue',
 				'tab:gray']
 alphas_conds = [1, 1/6, 2/6, 3/6, 4/6, 5/6, 1, 1]
+alphas_conds2 = [1, 3.5/6, 4/6, 4.5/6, 5/6, 5.5/6, 1, 1]
 
 rates_fits = [[] for _ in conds]
 stimrates = [[] for _ in conds]
@@ -439,6 +440,7 @@ x_labels2 = ['MDD',
 x = [0.,8.5]
 width = 1.
 fig_det, ax_det = plt.subplots(figsize=(9.5, 6))
+fig_det_bp, ax_det_bp = plt.subplots(figsize=(9.5, 6))
 xt = [0 for _ in range(0,len(conds)*2-2)]
 for cind,c in enumerate(conds[:-1]):
 	if not len(conds) % 2:
@@ -467,11 +469,24 @@ for cind,c in enumerate(conds[:-1]):
 			elinewidth=3,
 			capthick=3
 			)
+	ax_det_bp.boxplot([failed_detections[cind],false_detections[cind]],positions=x2,
+		   boxprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+		   capprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+		   whiskerprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+		   flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+		   medianprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+		   widths=0.9
+		  )
 
 ax_det.plot([x[0], x[0]+len(conds[:-1])],[data_m[-1][0],data_m[-1][0]],'k',ls='dashed',alpha=1)
 ax_det.plot([x[1], x[1]+len(conds[:-1])],[data_m[-1][1],data_m[-1][1]],'k',ls='dashed',alpha=1)
 ax_det.fill_between([x[0], x[0]+len(conds[:-1])], y1 = [data_m[-1][0]+data_sd_u[-1][0],data_m[-1][0]+data_sd_u[-1][0]], y2 = [data_m[-1][0]-data_sd_l[-1][0],data_m[-1][0]-data_sd_l[-1][0]], color='k', alpha=0.2, zorder=2)
 ax_det.fill_between([x[1], x[1]+len(conds[:-1])], y1 = [data_m[-1][1]+data_sd_u[-1][1],data_m[-1][1]+data_sd_u[-1][1]], y2 = [data_m[-1][1]-data_sd_l[-1][1],data_m[-1][1]-data_sd_l[-1][1]], color='k', alpha=0.2, zorder=2)
+
+ax_det_bp.plot([x[0], x[0]+len(conds[:-1])],[data_m[-1][0],data_m[-1][0]],'k',ls='dashed',alpha=1)
+ax_det_bp.plot([x[1], x[1]+len(conds[:-1])],[data_m[-1][1],data_m[-1][1]],'k',ls='dashed',alpha=1)
+ax_det_bp.fill_between([x[0], x[0]+len(conds[:-1])], y1 = [data_m[-1][0]+data_sd_u[-1][0],data_m[-1][0]+data_sd_u[-1][0]], y2 = [data_m[-1][0]-data_sd_l[-1][0],data_m[-1][0]-data_sd_l[-1][0]], color='k', alpha=0.2, zorder=2)
+ax_det_bp.fill_between([x[1], x[1]+len(conds[:-1])], y1 = [data_m[-1][1]+data_sd_u[-1][1],data_m[-1][1]+data_sd_u[-1][1]], y2 = [data_m[-1][1]-data_sd_l[-1][1],data_m[-1][1]-data_sd_l[-1][1]], color='k', alpha=0.2, zorder=2)
 
 p_thresh = 0.05
 c_thresh = 1.
@@ -479,12 +494,16 @@ c_thresh = 1.
 for cind in range(0,len(conds[:-1])):
 	if ((p[cind][0] < p_thresh) & (abs(cd[cind][0]) > c_thresh)):
 		ax_det.text(x3[cind],data_m[cind][0]+data_sd_u[cind][0]+1.,'*',c=colors_conds[0],va='top' if ((p0[cind][0] < p_thresh) & (abs(cd0[cind][0]) >c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+		ax_det_bp.text(x3[cind],np.max(failed_detections[cind])+1.,'*',c=colors_conds[0],va='top' if ((p0[cind][0] < p_thresh) & (abs(cd0[cind][0]) >c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 	if ((p[cind][1] < p_thresh) & (abs(cd[cind][1]) > c_thresh)):
 		ax_det.text(x3[cind]+x[1],data_m[cind][1]+data_sd_u[cind][1]+1.,'*',c=colors_conds[0],va='top' if ((p0[cind][1] < p_thresh) & (abs(cd0[cind][1]) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+		ax_det_bp.text(x3[cind]+x[1],np.max(false_detections[cind])+1.,'*',c=colors_conds[0],va='top' if ((p0[cind][1] < p_thresh) & (abs(cd0[cind][1]) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 	if ((p0[cind][0] < p_thresh) & (abs(cd0[cind][0]) > c_thresh)):
 		ax_det.text(x3[cind],data_m[cind][0]+data_sd_u[cind][0]+1.,'*',c='k',va='bottom' if ((p[cind][0] < p_thresh) & (abs(cd[cind][0]) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+		ax_det_bp.text(x3[cind],np.max(failed_detections[cind])+1.,'*',c='k',va='bottom' if ((p[cind][0] < p_thresh) & (abs(cd[cind][0]) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 	if ((p0[cind][1] < p_thresh) & (abs(cd0[cind][1]) > c_thresh)):
 		ax_det.text(x3[cind]+x[1],data_m[cind][1]+data_sd_u[cind][1]+1.,'*',c='k',va='bottom' if ((p[cind][1] < p_thresh) & (abs(cd[cind][1]) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+		ax_det_bp.text(x3[cind]+x[1],np.max(false_detections[cind])+1.,'*',c='k',va='bottom' if ((p[cind][1] < p_thresh) & (abs(cd[cind][1]) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 
 x_labels = ['MDD',
 			'25%',
@@ -513,6 +532,17 @@ ax_det.spines['top'].set_visible(False)
 ax_det.set_xlim(-1.1,16.1)
 fig_det.tight_layout()
 fig_det.savefig('figs_ratedistributions_doseResponse/DetectionProbability.png',dpi=300,transparent=True)
+plt.close()
+
+ax_det_bp.set_ylabel('Probability (%)')
+ax_det_bp.set_xticks(xt)
+ax_det_bp.set_xticklabels(x_labels, rotation = 45, ha="center")
+ax_det_bp.grid(False)
+ax_det_bp.spines['right'].set_visible(False)
+ax_det_bp.spines['top'].set_visible(False)
+ax_det_bp.set_xlim(-1.1,16.1)
+fig_det_bp.tight_layout()
+fig_det_bp.savefig('figs_ratedistributions_doseResponse/DetectionProbability_bp.png',dpi=300,transparent=True)
 plt.close()
 
 # Average baseline fits

@@ -714,7 +714,8 @@ for lind,labeli in enumerate(x_labels2):
 df.to_csv('figs_PSD_Dose_V3/stats_PSD.csv')
 
 
-figsize1 = (7,5)
+figsize0 = (7,5)
+figsize1 = (10,5)#(7,5)
 figsize2 = (14,5)
 dh1 = 0.03
 
@@ -735,7 +736,7 @@ for cind in range(len(conds)):
 
 ax_bands.set_ylabel(r'Offset (mV$^2$)')
 ax_bands.set_xticks(xinds)
-ax_bands.set_xticklabels(x_labels, rotation = 45, ha="center")
+ax_bands.set_xticklabels(x_labels, rotation = 0, ha="center")
 ax_bands.grid(False)
 ax_bands.spines['right'].set_visible(False)
 ax_bands.spines['top'].set_visible(False)
@@ -757,7 +758,7 @@ for cind in range(len(conds)):
 
 ax_bands.set_ylabel('Broadband')
 ax_bands.set_xticks(xinds)
-ax_bands.set_xticklabels(x_labels, rotation = 45, ha="center")
+ax_bands.set_xticklabels(x_labels, rotation = 0, ha="center")
 ax_bands.grid(False)
 ax_bands.spines['right'].set_visible(False)
 ax_bands.spines['top'].set_visible(False)
@@ -780,7 +781,7 @@ def dotplot_multigroup(metric,metric_m,metric_sd,metric_p0,metric_p,metric_cd0,m
 
 	ax_bands.set_ylabel(ylabelname)
 	ax_bands.set_xticks(xinds)
-	ax_bands.set_xticklabels(x_labels, rotation = 45, ha="center")
+	ax_bands.set_xticklabels(x_labels, rotation = 0, ha="center")
 	ax_bands.grid(False)
 	ax_bands.spines['right'].set_visible(False)
 	ax_bands.spines['top'].set_visible(False)
@@ -805,7 +806,7 @@ dotplot_multigroup(num_peaks_b,num_peaks_b_m,num_peaks_b_sd,num_peaks_b_p0,num_p
 
 
 xinds = np.arange(0,len(conds))
-fig_bands, ax_bands = plt.subplots(figsize=figsize1)
+fig_bands, ax_bands = plt.subplots(figsize=figsize0)
 for cind in range(len(conds)):
 	ax_bands.scatter(xinds[cind]+(np.random.random(len(AUC_t_abs[cind]))*0.4-0.2),AUC_t_abs[cind],s=23,facecolor=colors_conds[cind],edgecolors='face',alpha=0.4*alphas_conds[cind])
 	ln1, = ax_bands.plot([xinds[cind]-0.25,xinds[cind]+0.25],[AUC_t_abs_m[cind],AUC_t_abs_m[cind]],'k',alpha=1,linewidth=3)
@@ -826,7 +827,7 @@ fig_bands.tight_layout()
 fig_bands.savefig('figs_PSD_Dose_V3/EEG_PSDthetaAUC.png',dpi=300,transparent=True)
 
 xinds = np.arange(0,len(conds))
-fig_bands, ax_bands = plt.subplots(figsize=figsize1)
+fig_bands, ax_bands = plt.subplots(figsize=figsize0)
 for cind in range(len(conds)):
 	ax_bands.scatter(xinds[cind]+(np.random.random(len(AUC_a_abs[cind]))*0.4-0.2),AUC_a_abs[cind],s=23,facecolor=colors_conds[cind],edgecolors='face',alpha=0.4*alphas_conds[cind])
 	ln1, = ax_bands.plot([xinds[cind]-0.25,xinds[cind]+0.25],[AUC_a_abs_m[cind],AUC_a_abs_m[cind]],'k',alpha=1,linewidth=3)
@@ -847,7 +848,7 @@ fig_bands.tight_layout()
 fig_bands.savefig('figs_PSD_Dose_V3/EEG_PSDalphaAUC.png',dpi=300,transparent=True)
 
 xinds = np.arange(0,len(conds))
-fig_bands, ax_bands = plt.subplots(figsize=figsize1)
+fig_bands, ax_bands = plt.subplots(figsize=figsize0)
 for cind in range(len(conds)):
 	ax_bands.scatter(xinds[cind]+(np.random.random(len(AUC_b_abs[cind]))*0.4-0.2),AUC_b_abs[cind],s=23,facecolor=colors_conds[cind],edgecolors='face',alpha=0.4*alphas_conds[cind])
 	ln1, = ax_bands.plot([xinds[cind]-0.25,xinds[cind]+0.25],[AUC_b_abs_m[cind],AUC_b_abs_m[cind]],'k',alpha=1,linewidth=3)
@@ -884,7 +885,7 @@ for cind in range(len(conds)):
 
 ax_bands.set_ylabel('AUC')
 ax_bands.set_xticks(xinds)
-ax_bands.set_xticklabels(x_labels, rotation = 45, ha="center")
+ax_bands.set_xticklabels(x_labels, rotation = 0, ha="center")
 ax_bands.grid(False)
 ax_bands.spines['right'].set_visible(False)
 ax_bands.spines['top'].set_visible(False)
@@ -907,7 +908,7 @@ for cind in range(len(conds)):
 
 ax_bands.set_ylabel(r'$\theta$')
 ax_bands.set_xticks(xinds)
-ax_bands.set_xticklabels(x_labels, rotation = 45, ha="center")
+ax_bands.set_xticklabels(x_labels, rotation = 0, ha="center")
 ax_bands.grid(False)
 ax_bands.spines['right'].set_visible(False)
 ax_bands.spines['top'].set_visible(False)
@@ -928,7 +929,7 @@ for cind in range(len(conds)):
 
 ax_bands.set_ylabel(r'$\alpha$')
 ax_bands.set_xticks(xinds)
-ax_bands.set_xticklabels(x_labels, rotation = 45, ha="center")
+ax_bands.set_xticklabels(x_labels, rotation = 0, ha="center")
 ax_bands.grid(False)
 ax_bands.spines['right'].set_visible(False)
 ax_bands.spines['top'].set_visible(False)
@@ -949,7 +950,7 @@ for cind in range(len(conds)):
 
 ax_bands.set_ylabel(r'$\beta$')
 ax_bands.set_xticks(xinds)
-ax_bands.set_xticklabels(x_labels, rotation = 45, ha="center")
+ax_bands.set_xticklabels(x_labels, rotation = 0, ha="center")
 ax_bands.grid(False)
 ax_bands.spines['right'].set_visible(False)
 ax_bands.spines['top'].set_visible(False)
@@ -971,7 +972,7 @@ for cind in range(len(conds)):
 
 ax_bands.set_ylabel(r'$\chi$')
 ax_bands.set_xticks(xinds)
-ax_bands.set_xticklabels(x_labels, rotation = 45, ha="center")
+ax_bands.set_xticklabels(x_labels, rotation = 0, ha="center")
 ax_bands.grid(False)
 ax_bands.spines['right'].set_visible(False)
 ax_bands.spines['top'].set_visible(False)
@@ -992,7 +993,7 @@ for cind in range(len(conds)):
 
 ax_bands.set_ylabel('Error')
 ax_bands.set_xticks(xinds)
-ax_bands.set_xticklabels(x_labels, rotation = 45, ha="center")
+ax_bands.set_xticklabels(x_labels, rotation = 0, ha="center")
 ax_bands.grid(False)
 ax_bands.spines['right'].set_visible(False)
 ax_bands.spines['top'].set_visible(False)

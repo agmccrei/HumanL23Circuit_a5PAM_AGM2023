@@ -19,7 +19,7 @@ Simulation code associated with the L2/3 circuit used throughout the manuscript 
 
 To run simulations, install all of the necessary python modules (see lfpy_env.yml), compile the mod files within the mod folder, and submit the simulations in parallel (e.g., see job.sh).
 
-In job.sh, the number in the mpiexec command (see below - 1234) controls the random seed used for both the circuit variance (i.e., connection matrix, synapse placement, etc.) and the stimulus variance (i.e. Ornstein Uhlenbeck noise and stimulus presynaptic spike train timing).
+In job.sh, the number in the mpiexec command (see below - 1234) controls the random seed used for both the circuit variance (i.e., connection matrix, synapse placement, etc.) and the stimulus variance (i.e. Ornstein Uhlenbeck noise and stimulus presynaptic spike train timing). Simulations using 400 processors will take less than 10 mins when running 4.5s long simulations.
 
 mpiexec -n 400 python circuit.py 1234
 

@@ -411,11 +411,16 @@ def plot_metric_across_conditions(data,ylabel,filename,sig_ind=0,multiplier=4):
 	shift=[-0.8,0,0.8]
 	xtick_labels = ['1X','3X','6X']
 	
-	fig_Pyr, ax_Pyr = plt.subplots(figsize=(6, 9))
-	fig_SST, ax_SST = plt.subplots(figsize=(6, 9))
-	fig_PV, ax_PV = plt.subplots(figsize=(6, 9))
-	fig_VIP, ax_VIP = plt.subplots(figsize=(6, 9))
+	fig_Pyr, ax_Pyr = plt.subplots(figsize=(6, 6))
+	fig_SST, ax_SST = plt.subplots(figsize=(6, 6))
+	fig_PV, ax_PV = plt.subplots(figsize=(6, 6))
+	fig_VIP, ax_VIP = plt.subplots(figsize=(6, 6))
 	
+	fig_Pyr_bp, ax_Pyr_bp = plt.subplots(figsize=(6, 6))
+	fig_SST_bp, ax_SST_bp = plt.subplots(figsize=(6, 6))
+	fig_PV_bp, ax_PV_bp = plt.subplots(figsize=(6, 6))
+	fig_VIP_bp, ax_VIP_bp = plt.subplots(figsize=(6, 6))
+
 	m_Pyr = np.transpose(np.reshape([np.mean(data[cind],0)[0] for cind,_ in enumerate(conds)], (3,3)))
 	m_SST = np.transpose(np.reshape([np.mean(data[cind],0)[1] for cind,_ in enumerate(conds)], (3,3)))
 	m_PV = np.transpose(np.reshape([np.mean(data[cind],0)[2] for cind,_ in enumerate(conds)], (3,3)))
@@ -425,14 +430,59 @@ def plot_metric_across_conditions(data,ylabel,filename,sig_ind=0,multiplier=4):
 	sd_PV = np.transpose(np.reshape([np.std(data[cind],0)[2] for cind,_ in enumerate(conds)], (3,3)))
 	sd_VIP = np.transpose(np.reshape([np.std(data[cind],0)[3] for cind,_ in enumerate(conds)], (3,3)))
 	
-	for cind, (y,err) in enumerate(zip(m_Pyr,sd_Pyr)):
+	Pyr_data = [[d[0] for d in c] for c in data]
+	SST_data = [[d[1] for d in c] for c in data]
+	PV_data = [[d[2] for d in c] for c in data]
+	VIP_data = [[d[3] for d in c] for c in data]
+	Pyr_data = np.transpose(np.reshape(Pyr_data, (3,3,N_seeds)),axes=[1,0,2])
+	SST_data = np.transpose(np.reshape(SST_data, (3,3,N_seeds)),axes=[1,0,2])
+	PV_data = np.transpose(np.reshape(PV_data, (3,3,N_seeds)),axes=[1,0,2])
+	VIP_data = np.transpose(np.reshape(VIP_data, (3,3,N_seeds)),axes=[1,0,2])
+	
+	for cind, (y,err,d) in enumerate(zip(m_Pyr,sd_Pyr,Pyr_data)):
 		ax_Pyr.bar([x0+shift[cind] for x0 in x],y,yerr=err,capsize=8,width=0.8,color=colors_conds[cind],edgecolor='k',ecolor='black',linewidth=1,error_kw={'elinewidth':3,'markeredgewidth':3})
-	for cind, (y,err) in enumerate(zip(m_SST,sd_SST)):
+		ax_Pyr_bp.boxplot(d.tolist(),
+			   positions=[x0+shift[cind] for x0 in x],
+			   boxprops=dict(color=colors_conds[cind],linewidth=3),
+			   capprops=dict(color=colors_conds[cind],linewidth=3),
+			   whiskerprops=dict(color=colors_conds[cind],linewidth=3),
+			   flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3),
+			   medianprops=dict(color=colors_conds[cind],linewidth=3),
+			   widths=0.9
+			  )
+	for cind, (y,err,d) in enumerate(zip(m_SST,sd_SST,SST_data)):
 		ax_SST.bar([x0+shift[cind] for x0 in x],y,yerr=err,capsize=8,width=0.8,color=colors_conds[cind],edgecolor='k',ecolor='black',linewidth=1,error_kw={'elinewidth':3,'markeredgewidth':3})
-	for cind, (y,err) in enumerate(zip(m_PV,sd_PV)):
+		ax_SST_bp.boxplot(d.tolist(),
+			   positions=[x0+shift[cind] for x0 in x],
+			   boxprops=dict(color=colors_conds[cind],linewidth=3),
+			   capprops=dict(color=colors_conds[cind],linewidth=3),
+			   whiskerprops=dict(color=colors_conds[cind],linewidth=3),
+			   flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3),
+			   medianprops=dict(color=colors_conds[cind],linewidth=3),
+			   widths=0.9
+			  )
+	for cind, (y,err,d) in enumerate(zip(m_PV,sd_PV,PV_data)):
 		ax_PV.bar([x0+shift[cind] for x0 in x],y,yerr=err,capsize=8,width=0.8,color=colors_conds[cind],edgecolor='k',ecolor='black',linewidth=1,error_kw={'elinewidth':3,'markeredgewidth':3})
-	for cind, (y,err) in enumerate(zip(m_VIP,sd_VIP)):
+		ax_PV_bp.boxplot(d.tolist(),
+			   positions=[x0+shift[cind] for x0 in x],
+			   boxprops=dict(color=colors_conds[cind],linewidth=3),
+			   capprops=dict(color=colors_conds[cind],linewidth=3),
+			   whiskerprops=dict(color=colors_conds[cind],linewidth=3),
+			   flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3),
+			   medianprops=dict(color=colors_conds[cind],linewidth=3),
+			   widths=0.9
+			  )
+	for cind, (y,err,d) in enumerate(zip(m_VIP,sd_VIP,VIP_data)):
 		ax_VIP.bar([x0+shift[cind] for x0 in x],y,yerr=err,capsize=8,width=0.8,color=colors_conds[cind],edgecolor='k',ecolor='black',linewidth=1,error_kw={'elinewidth':3,'markeredgewidth':3})
+		ax_VIP_bp.boxplot(d.tolist(),
+			   positions=[x0+shift[cind] for x0 in x],
+			   boxprops=dict(color=colors_conds[cind],linewidth=3),
+			   capprops=dict(color=colors_conds[cind],linewidth=3),
+			   whiskerprops=dict(color=colors_conds[cind],linewidth=3),
+			   flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3),
+			   medianprops=dict(color=colors_conds[cind],linewidth=3),
+			   widths=0.9
+			  )
 	
 	for cind,_ in enumerate(conds):
 		if cind <= 2:
@@ -466,32 +516,40 @@ def plot_metric_across_conditions(data,ylabel,filename,sig_ind=0,multiplier=4):
 		cd = cd_d[cind][0][sig_ind][0]
 		if ((ph < p_thresh) & (abs(ch) > c_thresh) & (cind!=0) & (cind!=3) & (cind!=6)):
 			ax_Pyr.text(x_pos,y_pos_pyr,'*',c='k',va='bottom' if ((pd < p_thresh) & (abs(cd) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_Pyr_bp.text(x_pos,y_pos_pyr,'*',c='k',va='bottom' if ((pd < p_thresh) & (abs(cd) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 		if ((pd < p_thresh) & (abs(cd) > c_thresh) & (cind!=0) & (cind!=3) & (cind!=6)):
 			ax_Pyr.text(x_pos,y_pos_pyr,'*',c=colors_conds[1],va='top' if ((ph < p_thresh) & (abs(ch) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_Pyr_bp.text(x_pos,y_pos_pyr,'*',c=colors_conds[1],va='top' if ((ph < p_thresh) & (abs(ch) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 		ph = p_h[cind][1][sig_ind][0]
 		ch = cd_h[cind][1][sig_ind][0]
 		pd = p_d[cind][1][sig_ind][0]
 		cd = cd_d[cind][1][sig_ind][0]
 		if ((ph < p_thresh) & (abs(ch) > c_thresh) & (cind!=0) & (cind!=3) & (cind!=6)):
 			ax_SST.text(x_pos,y_pos_sst,'*',c='k',va='bottom' if ((pd < p_thresh) & (abs(cd) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_SST_bp.text(x_pos,y_pos_sst,'*',c='k',va='bottom' if ((pd < p_thresh) & (abs(cd) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 		if ((pd < p_thresh) & (abs(cd) > c_thresh) & (cind!=0) & (cind!=3) & (cind!=6)):
 			ax_SST.text(x_pos,y_pos_sst,'*',c=colors_conds[1],va='top' if ((ph < p_thresh) & (abs(ch) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_SST_bp.text(x_pos,y_pos_sst,'*',c=colors_conds[1],va='top' if ((ph < p_thresh) & (abs(ch) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 		ph = p_h[cind][2][sig_ind][0]
 		ch = cd_h[cind][2][sig_ind][0]
 		pd = p_d[cind][2][sig_ind][0]
 		cd = cd_d[cind][2][sig_ind][0]
 		if ((ph < p_thresh) & (abs(ch) > c_thresh) & (cind!=0) & (cind!=3) & (cind!=6)):
 			ax_PV.text(x_pos,y_pos_pv,'*',c='k',va='bottom' if ((pd < p_thresh) & (abs(cd) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_PV_bp.text(x_pos,y_pos_pv,'*',c='k',va='bottom' if ((pd < p_thresh) & (abs(cd) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 		if ((pd < p_thresh) & (abs(cd) > c_thresh) & (cind!=0) & (cind!=3) & (cind!=6)):
 			ax_PV.text(x_pos,y_pos_pv,'*',c=colors_conds[1],va='top' if ((ph < p_thresh) & (abs(ch) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_PV_bp.text(x_pos,y_pos_pv,'*',c=colors_conds[1],va='top' if ((ph < p_thresh) & (abs(ch) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 		ph = p_h[cind][3][sig_ind][0]
 		ch = cd_h[cind][3][sig_ind][0]
 		pd = p_d[cind][3][sig_ind][0]
 		cd = cd_d[cind][3][sig_ind][0]
 		if ((ph < p_thresh) & (abs(ch) > c_thresh) & (cind!=0) & (cind!=3) & (cind!=6)):
 			ax_VIP.text(x_pos,y_pos_vip,'*',c='k',va='bottom' if ((pd < p_thresh) & (abs(cd) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_VIP_bp.text(x_pos,y_pos_vip,'*',c='k',va='bottom' if ((pd < p_thresh) & (abs(cd) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 		if ((pd < p_thresh) & (abs(cd) > c_thresh) & (cind!=0) & (cind!=3) & (cind!=6)):
 			ax_VIP.text(x_pos,y_pos_vip,'*',c=colors_conds[1],va='top' if ((ph < p_thresh) & (abs(ch) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_VIP_bp.text(x_pos,y_pos_vip,'*',c=colors_conds[1],va='top' if ((ph < p_thresh) & (abs(ch) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 	
 	ax_Pyr.set_ylabel('Pyr '+ylabel)
 	ax_SST.set_ylabel('SST '+ylabel)
@@ -533,6 +591,49 @@ def plot_metric_across_conditions(data,ylabel,filename,sig_ind=0,multiplier=4):
 	fig_SST.savefig('figsV1_backgroundinput/SST_'+filename+'.png',dpi=300,transparent=True)
 	fig_PV.savefig('figsV1_backgroundinput/PV_'+filename+'.png',dpi=300,transparent=True)
 	fig_VIP.savefig('figsV1_backgroundinput/VIP_'+filename+'.png',dpi=300,transparent=True)
+	
+	ax_Pyr_bp.set_ylabel('Pyr '+ylabel)
+	ax_SST_bp.set_ylabel('SST '+ylabel)
+	ax_PV_bp.set_ylabel('PV '+ylabel)
+	ax_VIP_bp.set_ylabel('VIP '+ylabel)
+	ax_Pyr_bp.set_xlabel(r'$G_{OU}$')
+	ax_SST_bp.set_xlabel(r'$G_{OU}$')
+	ax_PV_bp.set_xlabel(r'$G_{OU}$')
+	ax_VIP_bp.set_xlabel(r'$G_{OU}$')
+	ax_Pyr_bp.set_xticks(x)
+	ax_SST_bp.set_xticks(x)
+	ax_PV_bp.set_xticks(x)
+	ax_VIP_bp.set_xticks(x)
+	ax_Pyr_bp.set_xlim(x[0]-1.5,x[-1]+1.5)
+	ax_SST_bp.set_xlim(x[0]-1.5,x[-1]+1.5)
+	ax_PV_bp.set_xlim(x[0]-1.5,x[-1]+1.5)
+	ax_VIP_bp.set_xlim(x[0]-1.5,x[-1]+1.5)
+	ax_Pyr_bp.set_xticklabels(xtick_labels)
+	ax_SST_bp.set_xticklabels(xtick_labels)
+	ax_PV_bp.set_xticklabels(xtick_labels)
+	ax_VIP_bp.set_xticklabels(xtick_labels)
+	ax_Pyr_bp.grid(False)
+	ax_SST_bp.grid(False)
+	ax_PV_bp.grid(False)
+	ax_VIP_bp.grid(False)
+	ax_Pyr_bp.spines['right'].set_visible(False)
+	ax_SST_bp.spines['right'].set_visible(False)
+	ax_PV_bp.spines['right'].set_visible(False)
+	ax_VIP_bp.spines['right'].set_visible(False)
+	ax_Pyr_bp.spines['top'].set_visible(False)
+	ax_SST_bp.spines['top'].set_visible(False)
+	ax_PV_bp.spines['top'].set_visible(False)
+	ax_VIP_bp.spines['top'].set_visible(False)
+	fig_Pyr_bp.tight_layout()
+	fig_SST_bp.tight_layout()
+	fig_PV_bp.tight_layout()
+	fig_VIP_bp.tight_layout()
+	fig_Pyr_bp.savefig('figsV1_backgroundinput/Pyr_'+filename+'_bp.png',dpi=300,transparent=True)
+	fig_SST_bp.savefig('figsV1_backgroundinput/SST_'+filename+'_bp.png',dpi=300,transparent=True)
+	fig_PV_bp.savefig('figsV1_backgroundinput/PV_'+filename+'_bp.png',dpi=300,transparent=True)
+	fig_VIP_bp.savefig('figsV1_backgroundinput/VIP_'+filename+'_bp.png',dpi=300,transparent=True)
+	
+	plt.close()
 
 plot_metric_across_conditions(rates,'Baseline Rate (Hz)','base_rate', sig_ind=0, multiplier=6)
 plot_metric_across_conditions(stimrates,'Response Rate (Hz)','stim_rate', sig_ind=1, multiplier=4)

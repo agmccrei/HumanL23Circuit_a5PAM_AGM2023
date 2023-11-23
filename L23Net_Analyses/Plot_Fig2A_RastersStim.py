@@ -40,8 +40,8 @@ stimbegin = 3 # Time (ms) after stimtime where stimulation begins (i.e. the syst
 stimend = 53 # Stimbegin + duration of stimulus
 
 binsize = 3
-gstart = -400
-gstop = 400
+gstart = -500
+gstop = 100
 numbins = int((gstop - gstart)/binsize)
 
 startslice = stimtime+stimbegin
@@ -77,11 +77,11 @@ def plot_raster(SPIKES,gstart=gstart,gstop=gstop,N_cells=N_cells,stimtime=stimti
 	return fig_t
 
 for control in controli:
-	path = 'Saved_SpikesOnly/'+control+'/'
+	path = control+'/HL23net_Drug/Circuit_output/'
 	for idx in range(0,len(rndinds)):
 		print('Seed #'+str(idx))
 		temp_sn = np.load(path + 'SPIKES_Seed'+str(rndinds[idx])+'.npy',allow_pickle=True)
 		
 		fig_raster = plot_raster(temp_sn.item(),gstart=gstart,gstop=gstop,N_cells=N_cells,stimtime=stimtime)
-		fig_raster.savefig('figs_rasters_stim_V2/raster_seed'+str(idx)+'_angle_'+control+'.png',bbox_inches='tight', dpi=300, transparent=True)
+		fig_raster.savefig('figs_rasters_stim_V1/raster_seed'+str(idx)+'_angle_'+control+'.png',bbox_inches='tight', dpi=300, transparent=True)
 		plt.close(fig_raster)

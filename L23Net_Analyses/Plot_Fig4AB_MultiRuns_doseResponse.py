@@ -86,6 +86,7 @@ colors_conds = ['tab:purple',
 				'dodgerblue',
 				'tab:gray']
 alphas_conds = [1, 1/6, 2/6, 3/6, 4/6, 5/6, 1, 1]
+alphas_conds2 = [1, 3.5/6, 4/6, 4.5/6, 5/6, 5.5/6, 1, 1]
 
 broadband = (4,30)
 thetaband = (4,8)
@@ -405,6 +406,15 @@ fig_snr, ax_snr = plt.subplots(figsize=(8, 3.2))
 fig_snr_PN, ax_snr_PN = plt.subplots(figsize=(7, 7))
 fig_percentsilent, ax_percentsilent = plt.subplots(figsize=(6, 5))
 fig_percentsilent_PN, ax_percentsilent_PN = plt.subplots(figsize=(7, 7))
+
+fig_rates_bp, ax_rates_bp = plt.subplots(figsize=(8, 3.2))
+fig_rates_PN_bp, ax_rates_PN_bp = plt.subplots(figsize=(7, 7))
+fig_stimrates_bp, ax_stimrates_bp = plt.subplots(figsize=(8, 3.2))
+fig_stimrates_PN_bp, ax_stimrates_PN_bp = plt.subplots(figsize=(9.5, 6))
+fig_snr_bp, ax_snr_bp = plt.subplots(figsize=(8, 3.2))
+fig_snr_PN_bp, ax_snr_PN_bp = plt.subplots(figsize=(7, 7))
+fig_percentsilent_bp, ax_percentsilent_bp = plt.subplots(figsize=(6, 5))
+fig_percentsilent_PN_bp, ax_percentsilent_PN_bp = plt.subplots(figsize=(7, 7))
 for cind, cond in enumerate(conds):
 	meanRates = np.mean(rates[cind],0)
 	meanStimRates = np.mean(stimrates[cind],0)
@@ -502,6 +512,14 @@ for cind, cond in enumerate(conds):
 			   linewidth=1,
 			   error_kw={'elinewidth':3,'markeredgewidth':3}
 			  )
+		ax_rates_bp.boxplot(np.transpose(rates[cind]).tolist()[1:],positions=x[cind][1:],
+			   boxprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   capprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   whiskerprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   medianprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   widths=0.9
+			  )
 		ax_rates_PN.bar(x_PN[cind],height=meanRates[0],
 			   yerr=stdevRates[0],    # error bars
 			   capsize=12, # error bar cap width in points
@@ -513,10 +531,20 @@ for cind, cond in enumerate(conds):
 			   linewidth=1,
 			   error_kw={'elinewidth':3,'markeredgewidth':3}
 			   )
+		ax_rates_PN_bp.boxplot(np.transpose(rates[cind]).tolist()[0],positions=[x_PN[cind]],
+			   boxprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   capprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   whiskerprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   medianprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   widths=0.9
+			  )
 		if ((pval_PN_0 < p_thresh) & (abs(cd_PN_0) > c_thresh)):
 			ax_rates_PN.text(x_PN[cind],meanRates[0]+stdevRates[0]+0.3,'*',c='k',va='bottom' if ((pval_PN < p_thresh) & (abs(cd_PN) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_rates_PN_bp.text(x_PN[cind],np.max(np.transpose(rates[cind])[0])+0.3,'*',c='k',va='bottom' if ((pval_PN < p_thresh) & (abs(cd_PN) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 		if ((pval_PN < p_thresh) & (abs(cd_PN) > c_thresh)):
 			ax_rates_PN.text(x_PN[cind],meanRates[0]+stdevRates[0]+0.3,'*',c=colors_conds[0],va='top' if ((pval_PN_0 < p_thresh) & (abs(cd_PN_0) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_rates_PN_bp.text(x_PN[cind],np.max(np.transpose(rates[cind])[0])+0.3,'*',c=colors_conds[0],va='top' if ((pval_PN_0 < p_thresh) & (abs(cd_PN_0) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 			# barplot_annotate_brackets(fig_rates_PN, ax_rates_PN, cind-1, cind, '*', x_PN, [maxPNrate for _ in range(0,len(conds))], yerr=[0.01 for _ in range(0,len(conds))])
 		
 		# stimulation
@@ -530,6 +558,14 @@ for cind, cond in enumerate(conds):
 			   alpha=alphas_conds[cind],
 			   linewidth=1,
 			   error_kw={'elinewidth':3,'markeredgewidth':3}
+			  )
+		ax_stimrates_bp.boxplot(np.transpose(stimrates[cind]).tolist()[1:],positions=x[cind][1:],
+			   boxprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   capprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   whiskerprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   medianprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   widths=0.9
 			  )
 		ax_stimrates_PN.bar(x_PN[cind],height=meanRates[0],
 			   yerr=stdevRates[0],    # error bars
@@ -553,10 +589,34 @@ for cind, cond in enumerate(conds):
 			   linewidth=1,
 			   error_kw={'elinewidth':3,'markeredgewidth':3}
 			   )
+		ax_stimrates_PN_bp.boxplot(np.transpose(rates[cind]).tolist()[0],positions=[x_PN[cind]],
+			   boxprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   capprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   whiskerprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   medianprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   widths=0.9
+			  )
+		ax_stimrates_PN_bp.boxplot(np.transpose(stimrates[cind]).tolist()[0],positions=[x_PN[cind]+8],
+			   boxprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   capprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   whiskerprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   medianprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   widths=0.9
+			  )
 		if ((pval_PN_0 < p_thresh) & (abs(cd_PN_0) > c_thresh)):
-			ax_stimrates_PN.text(x_PN[cind],meanRates[0]+stdevRates[0]+0.3,'*',c='k',va='bottom' if ((pval_PN < p_thresh) & (abs(cd_PN) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_stimrates_PN.text(x_PN[cind],meanRates[0]+stdevRates[0]+0.4,'*',c='k',va='bottom' if ((pval_PN < p_thresh) & (abs(cd_PN) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_stimrates_PN_bp.text(x_PN[cind],np.max(np.transpose(rates[cind])[0])+0.4,'*',c='k',va='bottom' if ((pval_PN < p_thresh) & (abs(cd_PN) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 		if ((pval_PN < p_thresh) & (abs(cd_PN) > c_thresh)):
-			ax_stimrates_PN.text(x_PN[cind],meanRates[0]+stdevRates[0]+0.3,'*',c=colors_conds[0],va='top' if ((pval_PN_0 < p_thresh) & (abs(cd_PN_0) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_stimrates_PN.text(x_PN[cind],meanRates[0]+stdevRates[0]+0.4,'*',c=colors_conds[0],va='top' if ((pval_PN_0 < p_thresh) & (abs(cd_PN_0) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_stimrates_PN_bp.text(x_PN[cind],np.max(np.transpose(rates[cind])[0])+0.4,'*',c=colors_conds[0],va='top' if ((pval_PN_0 < p_thresh) & (abs(cd_PN_0) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+		if ((pval_stimPN_0 < p_thresh) & (abs(cd_stimPN_0) > c_thresh)):
+			ax_stimrates_PN.text(x_PN[cind]+8,meanStimRates[0]+stdevStimRates[0]+0.4,'*',c='k',va='bottom' if ((pval_stimPN < p_thresh) & (abs(cd_stimPN) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_stimrates_PN_bp.text(x_PN[cind]+8,np.max(np.transpose(stimrates[cind])[0])+0.4,'*',c='k',va='bottom' if ((pval_stimPN < p_thresh) & (abs(cd_stimPN) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+		if ((pval_stimPN < p_thresh) & (abs(cd_stimPN) > c_thresh)):
+			ax_stimrates_PN.text(x_PN[cind]+8,meanStimRates[0]+stdevStimRates[0]+0.4,'*',c=colors_conds[0],va='top' if ((pval_stimPN_0 < p_thresh) & (abs(cd_stimPN_0) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_stimrates_PN_bp.text(x_PN[cind]+8,np.max(np.transpose(stimrates[cind])[0])+0.4,'*',c=colors_conds[0],va='top' if ((pval_stimPN_0 < p_thresh) & (abs(cd_stimPN_0) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 		# if ((pval_stimPN_0 < 0.05) & (abs(cd_stimPN_0) > 0.5)):
 		# 	ax_stimrates_PN.text(x_PN[cind]+8,meanStimRates[0]+stdevStimRates[0]+0.1,'*',c='k',ha='right' if ((pval_stimPN < 0.05) & (abs(cd_stimPN) > 0.5)) else 'center', va='bottom')
 		# if ((pval_stimPN < 0.05) & (abs(cd_stimPN) > 0.5)):
@@ -575,6 +635,14 @@ for cind, cond in enumerate(conds):
 			   linewidth=1,
 			   error_kw={'elinewidth':3,'markeredgewidth':3}
 			  )
+		ax_snr_bp.boxplot(np.transpose(snrs[cind]).tolist()[1:],positions=x[cind][1:],
+			   boxprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   capprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   whiskerprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   medianprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   widths=0.9
+			  )
 		ax_snr_PN.bar(x_PN[cind],height=meanSNRs[0],
 			   yerr=stdevSNRs[0],    # error bars
 			   capsize=12, # error bar cap width in points
@@ -586,10 +654,20 @@ for cind, cond in enumerate(conds):
 			   linewidth=1,
 			   error_kw={'elinewidth':3,'markeredgewidth':3}
 			   )
+		ax_snr_PN_bp.boxplot(np.transpose(snrs[cind]).tolist()[0],positions=[x_PN[cind]],
+			   boxprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   capprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   whiskerprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   medianprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   widths=0.9
+			  )
 		if ((pval_snrPN_0 < p_thresh) & (abs(cd_snrPN_0) > c_thresh)):
 			ax_snr_PN.text(x_PN[cind],meanSNRs[0]+stdevSNRs[0]+0.6,'*',c='k',va='bottom' if ((pval_snrPN < p_thresh) & (abs(cd_snrPN) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_snr_PN_bp.text(x_PN[cind],np.max(np.transpose(snrs[cind])[0])+0.6,'*',c='k',va='bottom' if ((pval_snrPN < p_thresh) & (abs(cd_snrPN) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 		if ((pval_snrPN < p_thresh) & (abs(cd_snrPN) > c_thresh)):
 			ax_snr_PN.text(x_PN[cind],meanSNRs[0]+stdevSNRs[0]+0.6,'*',c=colors_conds[0],va='top' if ((pval_snrPN_0 < p_thresh) & (abs(cd_snrPN_0) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_snr_PN_bp.text(x_PN[cind],np.max(np.transpose(snrs[cind])[0])+0.6,'*',c=colors_conds[0],va='top' if ((pval_snrPN_0 < p_thresh) & (abs(cd_snrPN_0) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 			# barplot_annotate_brackets(fig_snr_PN, ax_snr_PN, cind-1, cind, '*', x_PN, [maxPNsnr for _ in range(0,len(conds))], yerr=[0.01 for _ in range(0,len(conds))])
 		
 		# percent silent
@@ -604,6 +682,14 @@ for cind, cond in enumerate(conds):
 			   linewidth=1,
 			   error_kw={'elinewidth':3,'markeredgewidth':3}
 			  )
+		ax_percentsilent_bp.boxplot(np.transpose(percentsilent[cind]).tolist()[1:],positions=x[cind][1:],
+			   boxprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   capprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   whiskerprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   medianprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   widths=0.9
+			  )
 		ax_percentsilent_PN.bar(x_PN[cind],height=meanSilent[0],
 			   yerr=stdevSilent[0],    # error bars
 			   capsize=12, # error bar cap width in points
@@ -615,10 +701,20 @@ for cind, cond in enumerate(conds):
 			   linewidth=1,
 			   error_kw={'elinewidth':3,'markeredgewidth':3}
 			  )
+		ax_percentsilent_PN_bp.boxplot(np.transpose(percentsilent[cind]).tolist()[0],positions=[x_PN[cind]],
+			   boxprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   capprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   whiskerprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   medianprops=dict(color=colors_conds[cind],linewidth=3,alpha=alphas_conds2[cind]),
+			   widths=0.9
+			  )
 		if ((pval_PNS_0 < p_thresh) & (abs(cd_PNS_0) > c_thresh)):
 			ax_percentsilent_PN.text(x_PN[cind],meanSilent[0]+stdevSilent[0]+0.3,'*',c='k',va='bottom' if ((pval_PNS < p_thresh) & (abs(cd_PNS) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_percentsilent_PN_bp.text(x_PN[cind],np.max(np.transpose(percentsilent[cind])[0])+2,'*',c='k',va='bottom' if ((pval_PNS < p_thresh) & (abs(cd_PNS) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 		if ((pval_PNS < p_thresh) & (abs(cd_PNS) > c_thresh)):
 			ax_percentsilent_PN.text(x_PN[cind],meanSilent[0]+stdevSilent[0]+0.3,'*',c=colors_conds[0],va='top' if ((pval_PNS_0 < p_thresh) & (abs(cd_PNS_0) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+			ax_percentsilent_PN_bp.text(x_PN[cind],np.max(np.transpose(percentsilent[cind])[0])+2,'*',c=colors_conds[0],va='top' if ((pval_PNS_0 < p_thresh) & (abs(cd_PNS_0) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 			# barplot_annotate_brackets(fig_percentsilent_PN, ax_percentsilent_PN, cind-1, cind, '*', x_PN, [maxPNpercentsilent for _ in range(0,len(conds))], yerr=[0.05 for _ in range(0,len(conds))])
 		
 	else:
@@ -634,7 +730,19 @@ for cind, cond in enumerate(conds):
 			
 			ax_percentsilent.plot([x[cind][sind]-len(conds[:-1])-0.5, x[cind][sind]-0.5],[meanSilent[sind],meanSilent[sind]],'k',ls='dashed',alpha=1)
 			ax_percentsilent.fill_between([x[cind][sind]-len(conds[:-1])-0.5, x[cind][sind]-0.5], y1 = [meanSilent[sind]+stdevSilent[sind],meanSilent[sind]+stdevSilent[sind]], y2 = [meanSilent[sind]-stdevSilent[sind],meanSilent[sind]-stdevSilent[sind]], color='k', alpha=0.2, zorder=2)
-		
+			
+			ax_rates_bp.plot([x[cind][sind]-len(conds[:-1])-0.5, x[cind][sind]-0.5],[meanRates[sind],meanRates[sind]],'k',ls='dashed',alpha=1)
+			ax_rates_bp.fill_between([x[cind][sind]-len(conds[:-1])-0.5, x[cind][sind]-0.5], y1 = [meanRates[sind]+stdevRates[sind],meanRates[sind]+stdevRates[sind]], y2 = [meanRates[sind]-stdevRates[sind],meanRates[sind]-stdevRates[sind]], color='k', alpha=0.2, zorder=2)
+			
+			ax_stimrates_bp.plot([x[cind][sind]-len(conds[:-1])-0.5, x[cind][sind]-0.5],[meanStimRates[sind],meanStimRates[sind]],'k',ls='dashed',alpha=1)
+			ax_stimrates_bp.fill_between([x[cind][sind]-len(conds[:-1])-0.5, x[cind][sind]-0.5], y1 = [meanStimRates[sind]+stdevStimRates[sind],meanStimRates[sind]+stdevStimRates[sind]], y2 = [meanStimRates[sind]-stdevStimRates[sind],meanStimRates[sind]-stdevStimRates[sind]], color='k', alpha=0.2, zorder=2)
+			
+			ax_snr_bp.plot([x[cind][sind]-len(conds[:-1])-0.5, x[cind][sind]-0.5],[meanSNRs[sind],meanSNRs[sind]],'k',ls='dashed',alpha=1)
+			ax_snr_bp.fill_between([x[cind][sind]-len(conds[:-1])-0.5, x[cind][sind]-0.5], y1 = [meanSNRs[sind]+stdevSNRs[sind],meanSNRs[sind]+stdevSNRs[sind]], y2 = [meanSNRs[sind]-stdevSNRs[sind],meanSNRs[sind]-stdevSNRs[sind]], color='k', alpha=0.2, zorder=2)
+			
+			ax_percentsilent_bp.plot([x[cind][sind]-len(conds[:-1])-0.5, x[cind][sind]-0.5],[meanSilent[sind],meanSilent[sind]],'k',ls='dashed',alpha=1)
+			ax_percentsilent_bp.fill_between([x[cind][sind]-len(conds[:-1])-0.5, x[cind][sind]-0.5], y1 = [meanSilent[sind]+stdevSilent[sind],meanSilent[sind]+stdevSilent[sind]], y2 = [meanSilent[sind]-stdevSilent[sind],meanSilent[sind]-stdevSilent[sind]], color='k', alpha=0.2, zorder=2)
+
 		ax_rates_PN.plot([x_PN[cind]-len(conds[:-1])-0.5, x_PN[cind]-0.5],[meanRates[0],meanRates[0]],'k',ls='dashed',alpha=1)
 		ax_rates_PN.fill_between([x_PN[cind]-len(conds[:-1])-0.5, x_PN[cind]-0.5], y1 = [meanRates[0]+stdevRates[0],meanRates[0]+stdevRates[0]], y2 = [meanRates[0]-stdevRates[0],meanRates[0]-stdevRates[0]], color='k', alpha=0.2, zorder=2)
 		
@@ -648,6 +756,20 @@ for cind, cond in enumerate(conds):
 		
 		ax_percentsilent_PN.plot([x_PN[cind]-len(conds[:-1])-0.5, x_PN[cind]-0.5],[meanSilent[0],meanSilent[0]],'k',ls='dashed',alpha=1)
 		ax_percentsilent_PN.fill_between([x_PN[cind]-len(conds[:-1])-0.5, x_PN[cind]-0.5], y1 = [meanSilent[0]+stdevSilent[0],meanSilent[0]+stdevSilent[0]], y2 = [meanSilent[0]-stdevSilent[0],meanSilent[0]-stdevSilent[0]], color='k', alpha=0.2, zorder=2)
+		
+		ax_rates_PN_bp.plot([x_PN[cind]-len(conds[:-1])-0.5, x_PN[cind]-0.5],[meanRates[0],meanRates[0]],'k',ls='dashed',alpha=1)
+		ax_rates_PN_bp.fill_between([x_PN[cind]-len(conds[:-1])-0.5, x_PN[cind]-0.5], y1 = [meanRates[0]+stdevRates[0],meanRates[0]+stdevRates[0]], y2 = [meanRates[0]-stdevRates[0],meanRates[0]-stdevRates[0]], color='k', alpha=0.2, zorder=2)
+		
+		ax_stimrates_PN_bp.plot([x_PN[cind]-len(conds[:-1])-0.5, x_PN[cind]-0.5],[meanRates[0],meanRates[0]],'k',ls='dashed',alpha=1)
+		ax_stimrates_PN_bp.plot([x_PN[cind]+8-len(conds[:-1])-0.5, x_PN[cind]+8-0.5],[meanStimRates[0],meanStimRates[0]],'k',ls='dashed',alpha=1)
+		ax_stimrates_PN_bp.fill_between([x_PN[cind]-len(conds[:-1])-0.5, x_PN[cind]-0.5], y1 = [meanRates[0]+stdevRates[0],meanRates[0]+stdevRates[0]], y2 = [meanRates[0]-stdevRates[0],meanRates[0]-stdevRates[0]], color='k', alpha=0.2, zorder=2)
+		ax_stimrates_PN_bp.fill_between([x_PN[cind]+8-len(conds[:-1])-0.5, x_PN[cind]+8-0.5], y1 = [meanStimRates[0]+stdevStimRates[0],meanStimRates[0]+stdevStimRates[0]], y2 = [meanStimRates[0]-stdevStimRates[0],meanStimRates[0]-stdevStimRates[0]], color='k', alpha=0.2, zorder=2)
+		
+		ax_snr_PN_bp.plot([x_PN[cind]-len(conds[:-1])-0.5, x_PN[cind]-0.5],[meanSNRs[0],meanSNRs[0]],'k',ls='dashed',alpha=1)
+		ax_snr_PN_bp.fill_between([x_PN[cind]-len(conds[:-1])-0.5, x_PN[cind]-0.5], y1 = [meanSNRs[0]+stdevSNRs[0],meanSNRs[0]+stdevSNRs[0]], y2 = [meanSNRs[0]-stdevSNRs[0],meanSNRs[0]-stdevSNRs[0]], color='k', alpha=0.2, zorder=2)
+		
+		ax_percentsilent_PN_bp.plot([x_PN[cind]-len(conds[:-1])-0.5, x_PN[cind]-0.5],[meanSilent[0],meanSilent[0]],'k',ls='dashed',alpha=1)
+		ax_percentsilent_PN_bp.fill_between([x_PN[cind]-len(conds[:-1])-0.5, x_PN[cind]-0.5], y1 = [meanSilent[0]+stdevSilent[0],meanSilent[0]+stdevSilent[0]], y2 = [meanSilent[0]-stdevSilent[0],meanSilent[0]-stdevSilent[0]], color='k', alpha=0.2, zorder=2)
 
 
 
@@ -663,6 +785,15 @@ ax_rates.spines['top'].set_visible(False)
 fig_rates.tight_layout()
 fig_rates.savefig('figsV1_doseResponse/Rates.png',dpi=300,transparent=True)
 
+ax_rates_bp.set_ylabel('Baseline Rate')
+ax_rates_bp.set_xticks([int(x_types[i]*len(x)+(len(x))/2 + i - 1) for i in range(1,len(x_labels_types))])
+ax_rates_bp.set_xticklabels(x_labels_types[1:])
+ax_rates_bp.grid(False)
+ax_rates_bp.spines['right'].set_visible(False)
+ax_rates_bp.spines['top'].set_visible(False)
+fig_rates_bp.tight_layout()
+fig_rates_bp.savefig('figsV1_doseResponse/Rates_bp.png',dpi=300,transparent=True)
+
 ax_rates_PN.set_ylabel('Baseline (Hz)')
 ax_rates_PN.set_xticks(x_PN[:-1])
 ax_rates_PN.set_xlim(-1.5,7.5)
@@ -673,6 +804,16 @@ ax_rates_PN.spines['top'].set_visible(False)
 fig_rates_PN.tight_layout()
 fig_rates_PN.savefig('figsV1_doseResponse/Rates_PN.png',dpi=300,transparent=True)
 
+ax_rates_PN_bp.set_ylabel('Baseline (Hz)')
+ax_rates_PN_bp.set_xticks(x_PN[:-1])
+ax_rates_PN_bp.set_xlim(-1.5,7.5)
+ax_rates_PN_bp.set_xticklabels(x_labels[:-1], rotation = 45, ha="center")
+ax_rates_PN_bp.grid(False)
+ax_rates_PN_bp.spines['right'].set_visible(False)
+ax_rates_PN_bp.spines['top'].set_visible(False)
+fig_rates_PN_bp.tight_layout()
+fig_rates_PN_bp.savefig('figsV1_doseResponse/Rates_PN_bp.png',dpi=300,transparent=True)
+
 ax_stimrates.set_ylabel('Response Rate')
 ax_stimrates.set_xticks([int(x_types[i]*len(x)+(len(x))/2 + i - 1) for i in range(1,len(x_labels_types))])
 ax_stimrates.set_xticklabels(x_labels_types[1:])
@@ -681,6 +822,15 @@ ax_stimrates.spines['right'].set_visible(False)
 ax_stimrates.spines['top'].set_visible(False)
 fig_stimrates.tight_layout()
 fig_stimrates.savefig('figsV1_doseResponse/StimRates.png',dpi=300,transparent=True)
+
+ax_stimrates_bp.set_ylabel('Response Rate')
+ax_stimrates_bp.set_xticks([int(x_types[i]*len(x)+(len(x))/2 + i - 1) for i in range(1,len(x_labels_types))])
+ax_stimrates_bp.set_xticklabels(x_labels_types[1:])
+ax_stimrates_bp.grid(False)
+ax_stimrates_bp.spines['right'].set_visible(False)
+ax_stimrates_bp.spines['top'].set_visible(False)
+fig_stimrates_bp.tight_layout()
+fig_stimrates_bp.savefig('figsV1_doseResponse/StimRates_bp.png',dpi=300,transparent=True)
 
 ax_stimrates_PN.set_ylabel('Pyr Firing Rate (Hz)')
 ax_stimrates_PN.set_xticks(x_PN2)
@@ -692,6 +842,16 @@ ax_stimrates_PN.spines['top'].set_visible(False)
 fig_stimrates_PN.tight_layout()
 fig_stimrates_PN.savefig('figsV1_doseResponse/StimRates_PN.png',dpi=300,transparent=True)
 
+ax_stimrates_PN_bp.set_ylabel('Pyr Firing Rate (Hz)')
+ax_stimrates_PN_bp.set_xticks(x_PN2)
+ax_stimrates_PN_bp.set_xlim(-1.6,15.6)
+ax_stimrates_PN_bp.set_xticklabels(['MDD','25%','50%','75%','100%','125%','150%','MDD','25%','50%','75%','100%','125%','150%'], rotation = 45, ha="center")
+ax_stimrates_PN_bp.grid(False)
+ax_stimrates_PN_bp.spines['right'].set_visible(False)
+ax_stimrates_PN_bp.spines['top'].set_visible(False)
+fig_stimrates_PN_bp.tight_layout()
+fig_stimrates_PN_bp.savefig('figsV1_doseResponse/StimRates_PN_bp.png',dpi=300,transparent=True)
+
 ax_snr.set_ylabel('SNR')
 ax_snr.set_xticks([int(x_types[i]*len(x)+(len(x))/2 + i - 1) for i in range(1,len(x_labels_types))])
 ax_snr.set_xticklabels(x_labels_types[1:])
@@ -700,6 +860,15 @@ ax_snr.spines['right'].set_visible(False)
 ax_snr.spines['top'].set_visible(False)
 fig_snr.tight_layout()
 fig_snr.savefig('figsV1_doseResponse/SNR.png',dpi=300,transparent=True)
+
+ax_snr_bp.set_ylabel('SNR')
+ax_snr_bp.set_xticks([int(x_types[i]*len(x)+(len(x))/2 + i - 1) for i in range(1,len(x_labels_types))])
+ax_snr_bp.set_xticklabels(x_labels_types[1:])
+ax_snr_bp.grid(False)
+ax_snr_bp.spines['right'].set_visible(False)
+ax_snr_bp.spines['top'].set_visible(False)
+fig_snr_bp.tight_layout()
+fig_snr_bp.savefig('figsV1_doseResponse/SNR_bp.png',dpi=300,transparent=True)
 
 ax_snr_PN.set_ylabel('SNR')
 ax_snr_PN.set_xticks(x_PN[:-1])
@@ -712,6 +881,17 @@ ax_snr_PN.spines['top'].set_visible(False)
 fig_snr_PN.tight_layout()
 fig_snr_PN.savefig('figsV1_doseResponse/SNR_PN.png',dpi=300,transparent=True)
 
+ax_snr_PN_bp.set_ylabel('SNR')
+ax_snr_PN_bp.set_xticks(x_PN[:-1])
+ax_snr_PN_bp.set_xlim(-1.5,7.5)
+ax_snr_PN_bp.set_ylim(0,8.5)
+ax_snr_PN_bp.set_xticklabels(x_labels[:-1], rotation = 45, ha="center")
+ax_snr_PN_bp.grid(False)
+ax_snr_PN_bp.spines['right'].set_visible(False)
+ax_snr_PN_bp.spines['top'].set_visible(False)
+fig_snr_PN_bp.tight_layout()
+fig_snr_PN_bp.savefig('figsV1_doseResponse/SNR_PN_bp.png',dpi=300,transparent=True)
+
 ax_percentsilent.set_ylabel('% Silent')
 ax_percentsilent.set_xticks([int(x_types[i]*len(x)+(len(x))/2 + i - 1) for i in range(1,len(x_labels_types))])
 ax_percentsilent.set_xticklabels(x_labels_types[1:])
@@ -720,6 +900,15 @@ ax_percentsilent.spines['right'].set_visible(False)
 ax_percentsilent.spines['top'].set_visible(False)
 fig_percentsilent.tight_layout()
 fig_percentsilent.savefig('figsV1_doseResponse/PercentSilent.png',dpi=300,transparent=True)
+
+ax_percentsilent_bp.set_ylabel('% Silent')
+ax_percentsilent_bp.set_xticks([int(x_types[i]*len(x)+(len(x))/2 + i - 1) for i in range(1,len(x_labels_types))])
+ax_percentsilent_bp.set_xticklabels(x_labels_types[1:])
+ax_percentsilent_bp.grid(False)
+ax_percentsilent_bp.spines['right'].set_visible(False)
+ax_percentsilent_bp.spines['top'].set_visible(False)
+fig_percentsilent_bp.tight_layout()
+fig_percentsilent_bp.savefig('figsV1_doseResponse/PercentSilent_bp.png',dpi=300,transparent=True)
 
 ax_percentsilent_PN.set_ylabel('Pyr % Silent')
 ax_percentsilent_PN.set_xticks(x_PN[:-1])
@@ -730,6 +919,17 @@ ax_percentsilent_PN.spines['right'].set_visible(False)
 ax_percentsilent_PN.spines['top'].set_visible(False)
 fig_percentsilent_PN.tight_layout()
 fig_percentsilent_PN.savefig('figsV1_doseResponse/PercentSilent_PN.png',dpi=300,transparent=True)
+
+ax_percentsilent_PN_bp.set_ylabel('Pyr % Silent')
+ax_percentsilent_PN_bp.set_xticks(x_PN[:-1])
+ax_percentsilent_PN_bp.set_xlim(-1.5,7.5)
+ax_percentsilent_PN_bp.set_xticklabels(x_labels[:-1], rotation = 45, ha="center")
+ax_percentsilent_PN_bp.grid(False)
+ax_percentsilent_PN_bp.spines['right'].set_visible(False)
+ax_percentsilent_PN_bp.spines['top'].set_visible(False)
+fig_percentsilent_PN_bp.tight_layout()
+fig_percentsilent_PN_bp.savefig('figsV1_doseResponse/PercentSilent_PN_bp.png',dpi=300,transparent=True)
+plt.close()
 plt.close()
 
 

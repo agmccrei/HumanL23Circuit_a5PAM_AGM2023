@@ -222,6 +222,104 @@ plot_bars(OEvent_WavePeakVal,'Wave Peak','WavePeakVal')
 plot_bars(OEvent_WaveletPeakVal,'Wavelet Peak','WaveletPeakVal')
 plot_bars(OEvent_WaveH,'Wave Height (mV)','WaveH')
 
+def plot_boxplots(data,ylabel,filename):
+	df_stats = pd.DataFrame(columns=["Band",
+									"Group 1",
+									"Group 2",
+									"Metric",
+									"Group 1 Mean",
+									"Group 1 SD",
+									"t-stat (rel)",
+									"p-value (rel)",
+									"Cohen's d",
+									"Normal test stat",
+									"Normal test p-value",
+									"Levene test stat",
+									"Levene test pvalue",
+									"MWU stat",
+									"MWU p-value"])
+	
+	fig_bands, ax_bands = plt.subplots(nrows=1,ncols=1,figsize=(13,5))
+	xvals = [x for x in range(len(bands))]
+	width = 0.3
+	offset = [-width,0,width] # of same length conds
+	
+	all_m = [[np.mean(d) for d in d1] for d1 in data]
+	all_sd = [[np.std(d) for d in d1] for d1 in data]
+	max_m = np.max(all_m)
+	min_m = np.min(all_m)
+	max_sd = np.max(all_sd)
+	for bind,b in enumerate(bands[:-1]): # Skip high gamma
+		for cind,c in enumerate(conds):
+			m_ = np.mean(data[bind][cind])
+			sd_ = np.std(data[bind][cind])
+			max_ = np.max(data[bind][cind])
+			min_ = np.min(data[bind][cind])
+			for cind2,c2 in enumerate(conds):
+				tstat,pval = st.ttest_rel(data[bind][cind],data[bind][cind2])
+				cd = cohen_d(data[bind][cind],data[bind][cind2])
+				nstat,npval = st.normaltest(data[bind][cind])
+				lstat,lpval = st.levene(data[bind][cind],data[bind][cind2],center='mean')
+				mwu_stat,mwu_pval = st.mannwhitneyu(data[bind][cind],data[bind][cind2])
+				df_stats = df_stats.append({"Band":b,
+									"Group 1" : c,
+									"Group 2": c2,
+									"Metric": ylabel,
+									"Group 1 Mean": m_,
+									"Group 1 SD": sd_,
+									"t-stat (rel)": tstat,
+									"p-value (rel)": pval,
+									"Cohen's d": cd,
+									"Normal test stat": nstat,
+									"Normal test p-value": npval,
+									"Levene test stat": lstat,
+									"Levene test pvalue": lpval,
+									"MWU stat": mwu_stat,
+									"MWU p-value": mwu_pval},
+									ignore_index = True)
+				if ((cind>0) & (cind2==0)): # if the index is MDD or MDD+a5PAM + if the comparison index is healthy
+					if ((pval < p_thresh) & (abs(cd) > c_thresh)):
+						ax_bands.text(xvals[bind]+offset[cind],max_+2*max_sd if np.sign(m_) == 1 else m_-3*max_sd,'*',c='k',va='top', ha='center',fontweight='bold',fontsize=fsize)
+				if ((cind==2) & (cind2==1)):  # if the index is MDD+a5PAM + if the comparison index is MDD
+					if ((pval < p_thresh) & (abs(cd) > c_thresh)):
+						ax_bands.text(xvals[bind]+offset[cind],max_+2*max_sd if np.sign(m_) == 1 else m_-3*max_sd,'*',c=colors_conds[1],va='center', ha='center',fontweight='bold',fontsize=fsize)
+			
+			ax_bands.boxplot(data[bind][cind],
+							positions=[xvals[bind]+offset[cind]],
+							boxprops=dict(color=colors_conds[cind],linewidth=3),
+							capprops=dict(color=colors_conds[cind],linewidth=3),
+							whiskerprops=dict(color=colors_conds[cind],linewidth=3),
+							flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3),
+							medianprops=dict(color=colors_conds[cind],linewidth=3),
+							widths=width-0.05
+							)
+	
+	if np.sign(max_m) == 1:
+		ax_bands.set_ylim(top=max_m+4.5*max_sd)
+	else:
+		ax_bands.set_ylim(bottom=min_m-4.5*max_sd)
+	ax_bands.set_xticks(xvals[:-1])
+	ax_bands.set_xticklabels(band_labels[:-1])
+	ax_bands.set_ylabel(ylabel)
+	ax_bands.grid(False)
+	ax_bands.spines['right'].set_visible(False)
+	ax_bands.spines['top'].set_visible(False)
+	fig_bands.tight_layout()
+	fig_bands.savefig('figs_OEvents_V1_thresh4/OEvent_'+filename+'_bp.png',dpi=300,transparent=True,bbox_inches='tight')
+	plt.close()
+	
+	df_stats.to_csv('figs_OEvents_V1_thresh4/stats_OEvents_'+filename+'_bp.csv')
+
+plot_boxplots(OEvent_counts,'Event Count','counts')
+plot_boxplots(OEvent_dur,'Event Duration (ms)','durations')
+plot_boxplots(OEvent_ncycles,'Cycle Count','cycles')
+plot_boxplots(OEvent_avgpow,'Normalized Power','powers')
+plot_boxplots(OEvent_peakF,'Peak Frequency (Hz)','peakfreq')
+plot_boxplots(OEvent_Fspan,'Frequency Span (Hz)','freqspan')
+plot_boxplots(OEvent_WavePeakVal,'Wave Peak','WavePeakVal')
+plot_boxplots(OEvent_WaveletPeakVal,'Wavelet Peak','WaveletPeakVal')
+plot_boxplots(OEvent_WaveH,'Wave Height (mV)','WaveH')
+
 
 def plot_cooccurences(data):
 	# convert raw data to means per condition

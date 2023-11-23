@@ -44,6 +44,7 @@ t3 = int((stimtime-response_window*4)*(1/dt))
 t4 = int((stimtime+response_window*4)*(1/dt))+1
 tvec = np.arange(endslice/dt+1)*dt
 tvec_stim = np.arange(response_window*8/dt+1)*dt-response_window*4
+bin_size = 1 # ms
 
 lag_window = 50
 lag_window_inds = int((lag_window/2)/dt) # ms converted to index
@@ -73,7 +74,7 @@ for seed in N_seedsList:
 		
 		# Spikes
 		spike_times_Pyr = [x[(x>startsclice) & (x<stimtime+dt)] for _,x in sorted(zip(temp_s.item()['gids'][0],temp_s.item()['times'][0]))]
-		spike_vec_Pyr = [np.histogram(x,bins=np.arange(startsclice,stimtime+dt,dt))[0] for _,x in sorted(zip(temp_s.item()['gids'][0],temp_s.item()['times'][0]))]
+		spike_vec_Pyr = [np.histogram(x,bins=np.arange(startsclice,stimtime+dt,bin_size))[0] for _,x in sorted(zip(temp_s.item()['gids'][0],temp_s.item()['times'][0]))]
 		
 		# Check equivalency (sanity check)
 		num_spikes_times = [len(x) for x in spike_times_Pyr]
@@ -114,6 +115,7 @@ p_thresh = 0.05
 c_thresh = 1.
 
 fig_xcorr_PN, ax_xcorr_PN = plt.subplots(figsize=(8, 3.5))
+fig_xcorr_PN_bp, ax_xcorr_PN_bp = plt.subplots(figsize=(4, 7))
 for cind, cond in enumerate(conds):
 	meanXcorrs = np.mean(xcorr_0lag[cind])
 	stdevXcorrs = np.std(xcorr_0lag[cind])
@@ -179,15 +181,26 @@ for cind, cond in enumerate(conds):
 		   linewidth=1,
 		   error_kw={'elinewidth':3,'markeredgewidth':3}
 		   )
+	ax_xcorr_PN_bp.boxplot(xcorr_0lag[cind],
+						positions=[x_PN[cind]],
+						boxprops=dict(color=colors_conds[cind],linewidth=3),
+						capprops=dict(color=colors_conds[cind],linewidth=3),
+						whiskerprops=dict(color=colors_conds[cind],linewidth=3),
+						flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3),
+						medianprops=dict(color=colors_conds[cind],linewidth=3),
+						widths=0.6
+						)
 	if ((pval_PN_0 < p_thresh) & (abs(cd_PN_0) > c_thresh) & (cind>0)):
 		ax_xcorr_PN.text(x_PN[cind],meanXcorrs+stdevXcorrs+0.001,'*',c='k',va='bottom' if ((pval_PN < p_thresh) & (abs(cd_PN) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+		ax_xcorr_PN_bp.text(x_PN[cind],np.max(xcorr_0lag[cind])+0.0006,'*',c='k',va='bottom' if ((pval_PN < p_thresh) & (abs(cd_PN) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
 	if ((pval_PN < p_thresh) & (abs(cd_PN) > c_thresh) & (cind>0)):
 		ax_xcorr_PN.text(x_PN[cind],meanXcorrs+stdevXcorrs+0.001,'*',c=colors_conds[1],va='top' if ((pval_PN_0 < p_thresh) & (abs(cd_PN_0) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
-	
+		ax_xcorr_PN_bp.text(x_PN[cind],np.max(xcorr_0lag[cind])+0.0006,'*',c=colors_conds[1],va='top' if ((pval_PN_0 < p_thresh) & (abs(cd_PN_0) > c_thresh)) else 'top', ha='center',fontweight='bold',fontsize=fsize)
+
 
 df.to_csv('figs_spiketrainsynchrony_V1/stats_synchrony.csv')
 
-ax_xcorr_PN.set_ylabel('Spike Train\nCross-Correlation')
+ax_xcorr_PN.set_ylabel('Spike Train\nCorrelation')
 ax_xcorr_PN.set_xticks(x_PN)
 ax_xcorr_PN.set_xlim(-0.6,2.6)
 ax_xcorr_PN.set_xticklabels(x_labels)
@@ -196,3 +209,14 @@ ax_xcorr_PN.spines['right'].set_visible(False)
 ax_xcorr_PN.spines['top'].set_visible(False)
 fig_xcorr_PN.tight_layout()
 fig_xcorr_PN.savefig('figs_spiketrainsynchrony_V1/Synchrony_PN.png',dpi=300,transparent=True)
+
+ax_xcorr_PN_bp.set_ylabel('Spike Correlation')
+ax_xcorr_PN_bp.set_xticks(x_PN)
+ax_xcorr_PN_bp.set_xlim(-0.6,2.6)
+ax_xcorr_PN_bp.set_xticklabels(x_labels,rotation=45)
+ax_xcorr_PN_bp.ticklabel_format(style='sci',scilimits=(0, 0),axis='y')
+ax_xcorr_PN_bp.grid(False)
+ax_xcorr_PN_bp.spines['right'].set_visible(False)
+ax_xcorr_PN_bp.spines['top'].set_visible(False)
+fig_xcorr_PN_bp.tight_layout()
+fig_xcorr_PN_bp.savefig('figs_spiketrainsynchrony_V1/Synchrony_PN_bp.png',dpi=300,transparent=True)

@@ -272,6 +272,7 @@ df.to_csv('figs_ratedistributions_benzo/stats_FailedFalse.csv')
 x = [0.,5]
 width = 1.
 fig_det, ax_det = plt.subplots(figsize=(7, 6))
+fig_det_bp, ax_det_bp = plt.subplots(figsize=(7, 6))
 for cind,c in enumerate(conds):
 	if not len(conds) % 2:
 		x2 = [xr+cind*width+width/2 for xr in x]
@@ -295,7 +296,14 @@ for cind,c in enumerate(conds):
 			elinewidth=3,
 			capthick=3
 			)
-
+	ax_det_bp.boxplot([failed_detections[cind],false_detections[cind]],positions=x2,
+		   boxprops=dict(color=colors_conds[cind],linewidth=3),
+		   capprops=dict(color=colors_conds[cind],linewidth=3),
+		   whiskerprops=dict(color=colors_conds[cind],linewidth=3),
+		   flierprops=dict(color=colors_conds[cind], markeredgecolor=colors_conds[cind],linewidth=3),
+		   medianprops=dict(color=colors_conds[cind],linewidth=3),
+		   widths=0.9
+		  )
 p_thresh = 0.05
 c_thresh = 1.
 
@@ -304,9 +312,11 @@ pi2 = 0
 for cind in range(0,len(conds)-1):
 	if ((p[cind][0] < p_thresh) & (abs(cd[cind][0]) > c_thresh)):
 		barplot_annotate_brackets(fig_det, ax_det, cind, len(conds)-1, '*', x3, [11+pi1*1.4 for _ in data_m], yerr= [0.25 for _ in data_sd_u], barcolor=colors_conds2[cind])
+		barplot_annotate_brackets(fig_det_bp, ax_det_bp, cind, len(conds)-1, '*', x3, [11+pi1*1.4 for _ in data_m], yerr= [0.25 for _ in data_sd_u], barcolor=colors_conds2[cind])
 		pi1 += 1
 	if ((p[cind][1] < p_thresh) & (abs(cd[cind][1]) > c_thresh)):
 		barplot_annotate_brackets(fig_det, ax_det, cind, len(conds)-1, '*', [xx+x[1] for xx in x3], [12+pi2*1.4 for _ in data_m], yerr=[1. for _ in data_sd_u], barcolor=colors_conds2[cind])
+		barplot_annotate_brackets(fig_det_bp, ax_det_bp, cind, len(conds)-1, '*', [xx+x[1] for xx in x3], [12+pi2*1.4 for _ in data_m], yerr=[1.75 for _ in data_sd_u], barcolor=colors_conds2[cind])
 		pi2 += 1
 
 # ax_det.legend(loc='upper left')
@@ -319,6 +329,17 @@ ax_det.spines['right'].set_visible(False)
 ax_det.spines['top'].set_visible(False)
 fig_det.tight_layout()
 fig_det.savefig('figs_ratedistributions_benzo/DetectionProbability.png',dpi=300,transparent=True)
+plt.close()
+
+ax_det_bp.set_ylabel('Probability (%)')
+ax_det_bp.set_xticks([xx+len(conds)/2 for xx in x])
+ax_det_bp.set_xticklabels(['Failed\nDetection','False\nDetection'])
+ax_det_bp.set_xlim(-1.1,10.1)
+ax_det_bp.grid(False)
+ax_det_bp.spines['right'].set_visible(False)
+ax_det_bp.spines['top'].set_visible(False)
+fig_det_bp.tight_layout()
+fig_det_bp.savefig('figs_ratedistributions_benzo/DetectionProbability_bp.png',dpi=300,transparent=True)
 plt.close()
 
 # Average baseline fits
