@@ -8,6 +8,8 @@ Guet-McCreight A, Chameh HM, Mazza F, Prevot TD, Valiante TA, Sibille E, Hay E (
 
 This code is part of a provisional US patent. Name: EEG biomarkers for Alpha5-PAM therapy (US provisional patent no. 63/382,577).
 
+UPDATE: Added "L23Net_Drug_Neuron9" folder for code updated to work in NEURON 9.0.2 and LFPy 2.3.5, including mod files (Modified 2026-09-24 by Valis Sowilo - github.com/ValisSowilo), circuit.py, and circuit\_functions.py.
+
 Single Cell Gtonic Estimations (figure 1):
 All code associated with single cell Gtonic Estimation is found in the /GTonicEstimation_Fig1/ directory.
 
@@ -55,7 +57,16 @@ DRUG_benzo = 1
 
 
 Analysis Code:    
-All code used for analyzing the circuit simulation results is found in the /L23Net_Analyses/ directory. In all cases this code should run on personal machines. 
+All code used for analyzing the circuit simulation results is found in the /L23Net_Analyses/ directory. In all cases this code should run on personal machines - see below for specs of the system on which this code was tested.
+
+MacBook Pro, 13-inch, 2019    
+1.4 GHz Quad-Core    
+Intel Core i5    
+Intel Iris Plus Graphics     
+645 1536 MB    
+8 GB 2133 MHz    
+LPDDR3    
+Sonoma 14.0    
 
 Simulated data is required to run these files - to obtain this data, run the network simulations (as above) using HPC resources and then process the simulated data to generate PSD outputs saved to npy files (see L23Net_Analyses/Build_PSD_NPY_files.py) or generate oscillatory event analysis outputs saved to csv files (L23Net_Analyses/Build_OEvents_csv_files.py), which can then more readily be analyzed by the code files in L23Net_Analyses/. The analysis codes perform analyses of multiple simulations across random seeds per condition.
 
